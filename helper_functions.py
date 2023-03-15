@@ -78,23 +78,23 @@ def calculate_model_results(y_true, y_pred):
   }
 
 
-def compare_model_metrics(models=[], val_features, val_labels):
-    results = {}
+def compare_model_metrics(models, val_features, val_labels):
+  results = {}
 
-    for model in models:
-        pred_probs = model.predict(val_features)
-        preds = tf.squeeze(tf.round(pred_probs))
+  for model in models:
+    pred_probs = model.predict(val_features)
+    preds = tf.squeeze(tf.round(pred_probs))
 
-        results[model.name] = calculate_model_results(y_true = val_labels, y_pred = preds)
+    results[model.name] = calculate_model_results(y_true = val_labels, y_pred = preds)
 
-    return pd.DataFrame.from_dict(results).transpose().sort_values(by=['accuracy'])
+  return pd.DataFrame.from_dict(results).transpose().sort_values(by=['accuracy'])
 
 
 def create_checkpoint_callback(filepath, save_weights_only=True, save_best_only=True, monitor='val_accuracy', verbose=1):
   """
   Return a create checkpoin callback
   """
-  callback = tf.keras.callbacks.ModelCheckpoint(
+  return tf.keras.callbacks.ModelCheckpoint(
     filepath=filepath,
     save_weights_only=save_weights_only,
     save_best_only=save_best_only,
@@ -102,17 +102,13 @@ def create_checkpoint_callback(filepath, save_weights_only=True, save_best_only=
     verbose=verbose,
   )
 
-  return callback
-
 
 def create_early_stopping_callback(monitor='val_loss', patience=10, mode='min'):
   """
   Return an early stopping callback
   """
-  callback = tf.keras.callbacks.EarlyStopping(
+  return tf.keras.callbacks.EarlyStopping(
     monitor=monitor,
     patience=patience,
     mode=mode,
   )
-
-  return callback
